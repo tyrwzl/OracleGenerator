@@ -5,14 +5,14 @@
 
 // x, y is display coordinate
 inline unsigned short getDepth(int x, int y, cv::Mat& d) {
-	if (212 <= x || x <= 724 || 0 <= y || y <= 424)
+	if (212 <= x && x <= 724 && 0 <= y && y <= 424)
 		return *((unsigned short *)(d.data + d.step[0] * y + d.step[1] * (x - 212)));
 	else
 		return 0;
 }
 
 inline int getColorIndex(int x, int y, cv::Mat& c) {
-	if (212 <= x || x <= 724 || 0 <= y || y <= 424)
+	if (212 <= x && x <= 724 && 0 <= y && y <= 424)
 		return c.step[0] * y + ((x - 212) * 3);
 	else
 		return 0;
@@ -490,7 +490,10 @@ void ofApp::mouseMoved(int x, int y) {
 void ofApp::mouseDragged(int x, int y, int button) {
 	if (flag_auto == 0 && flag_joint == 0) {
 		//lines.push_back(std::vector<ofVec4f>());
-		(lines.end() - 1)->push_back(ofVec4f(x, y, draw_radius, color_hex));
+		if (button == 0)
+			(lines.end() - 1)->push_back(ofVec4f(x, y, draw_radius, color_hex));
+		else if (button == 2)
+			(lines.end() - 1)->push_back(ofVec4f(x, y, draw_radius, 0xC8C8C8));
 	}
 	mouse_position.x = x;
 	mouse_position.y = y;
