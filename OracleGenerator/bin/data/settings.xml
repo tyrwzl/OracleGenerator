@@ -95,3 +95,13 @@
     <Name>COLOR RECOG</Name>
     <Value>0</Value>
 </Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>NOT COLORING</Name>
+    <Value>1</Value>
+</Widget>
+<Widget>
+    <Kind>2</Kind>
+    <Name>FLY COLORING</Name>
+    <Value>0</Value>
+</Widget>

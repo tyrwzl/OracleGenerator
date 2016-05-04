@@ -56,6 +56,8 @@ public:
 	ofxUIRadio *rd_col;
 	ofxUIToggle *col_rec;
 	ofxUIToggle *tgl_auto;
+	ofxUIToggle *not_color;
+	ofxUIToggle *fly_color;
 	int draw_radius;
 	int color_hex;
 	// In drawing line, need Hex color code
@@ -111,6 +113,8 @@ public:
 	bool flag_joint;
 	int  joint_number;
 	bool flag_alpha;
+	bool flag_not_color;
+	bool flag_fly_color;
 	//bool flag_auto;
 	//bool flag_auto_second;
 	//bool flag_auto_drag;

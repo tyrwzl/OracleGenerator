@@ -37,6 +37,8 @@ void ofApp::setup() {
 	flag_joint = false;
 	joint_number = 0;
 	flag_alpha = false;
+	flag_not_color = true;
+	flag_fly_color = false;
 
 	path_number = 0;
 
@@ -354,6 +356,24 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
 			flag_color = 0;
 		}
 	}
+	else if (e.getName() == "NOT COLORING") {
+		ofxUIToggle *toogle = (ofxUIToggle *)e.getToggle();
+		if (toogle->getValue()) {
+			flag_not_color = 1;
+		}
+		else {
+			flag_not_color = 0;
+		}
+	}
+	else if (e.getName() == "FLY COLORING") {
+		ofxUIToggle *toogle = (ofxUIToggle *)e.getToggle();
+		if (toogle->getValue()) {
+			flag_fly_color = 1;
+		}
+		else {
+			flag_fly_color = 0;
+		}
+	}
 	//else if (e.getName() == "ti_rad") {
 	//	ofxUITextInput *ti = (ofxUITextInput *)e.widget;
 	//	if (ti->getInputTriggerType() == OFX_UI_TEXTINPUT_ON_ENTER)
@@ -516,24 +536,26 @@ void ofApp::mouseDragged(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
 	if (flag_joint) {
-		int depth = (int)getDepth(x, y, bm.GetDepthData());
-		point_joint[joint_number].x = x;
-		point_joint[joint_number].y = y;
-		point_joint[joint_number].z = depth;
-		joints[joint_number].x = depth * tan((x - 256 - 212) * M_PI * 70 / (360 * 256));
-		joints[joint_number].y = depth * tan((-y + 212)      * M_PI * 60 / (360 * 212));
-		joints[joint_number].z = depth;
-		//joints[joint_number].w = 
-		if (joint_number == 9) {
-			joint_number = 0;
-			flag_joint = false;
-			if (CheckPostureDuplication())
-				//TODO:color Filling
-				colorFill();
-			else
-				LoadNextImage();
+		if (212 <= x && x <= 724 && 0 <= y && y <= 424) {
+			int depth = (int)getDepth(x, y, bm.GetDepthData());
+			point_joint[joint_number].x = x;
+			point_joint[joint_number].y = y;
+			point_joint[joint_number].z = depth;
+			joints[joint_number].x = depth * tan((x - 256 - 212) * M_PI * 70 / (360 * 256));
+			joints[joint_number].y = depth * tan((-y + 212)      * M_PI * 60 / (360 * 212));
+			joints[joint_number].z = depth;
+			//joints[joint_number].w = 
+			if (joint_number == 9) {
+				joint_number = 0;
+				flag_joint = false;
+				if (CheckPostureDuplication())
+					//TODO:color Filling
+					colorFill();
+				else
+					LoadNextImage();
+			}
+			else joint_number++;
 		}
-		else joint_number++;
 	}
 	else if (flag_auto == 0) 
 		lines.push_back(std::vector<ofVec4f>());
@@ -818,6 +840,10 @@ void ofApp::setUI() {
 
 	ui->addSpacer();
 	ta4 = ui->addTextArea("info", "FILENAME:", OFX_UI_FONT_SMALL);
+
+	ui->addSpacer();
+	not_color = ui->addToggle("NOT COLORING", true);
+	fly_color = ui->addToggle("FLY COLORING", false);
 
 	ui->autoSizeToFitWidgets();
 	ui->setPosition(0, 0);
@@ -1141,8 +1167,10 @@ void ofApp::colorFill()
 	//	color_hex = 0xED1A3D;
 	//}
 	color_hex = 0xED1A3D;
-	ComplementColorFlying();
-	ComplementNotColoring();
+	if (flag_not_color)
+		ComplementColorFlying();
+	if (flag_fly_color)
+		ComplementNotColoring();
 }
 
 void ofApp::UpdateDataFile(std::string& datafile_name)
