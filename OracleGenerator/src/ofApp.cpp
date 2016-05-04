@@ -141,7 +141,7 @@ void ofApp::draw() {
 				ofDrawRectangle(line[i].x, line[i].y, 1, 1);
 			}
 			else {
-				color.setHex(line[i - 1].w);// , alpha);
+				color.setHex(line[i - 1].w);// , alpha);	
 				ofSetColor(color);
 				ofDrawCircle(line[i - 1].x, line[i - 1].y, line[i - 1].z);
 				ofDrawCircle(line[i].x, line[i].y, line[i].z);
@@ -156,6 +156,7 @@ void ofApp::draw() {
 				ofEndShape();
 			}
 		}
+
 	//for (const std::vector<ofVec3f>& line : auto_lines)
 	//	for (unsigned int i = 0; i < line.size(); i++) {
 	//		color.setHex(line[i].z);
