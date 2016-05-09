@@ -1261,17 +1261,25 @@ bool ofApp::CheckPostureDuplication()
 		return true;
 	}
 
+
+
 	for (const std::vector<ofVec3f>& pi: postures) {
+		bool isSimilar = true;
+
 		for (int i = 0; i < 10; ++i) {
 			double dist = (joints[i].x - pi[i].x) * (joints[i].x - pi[i].x) + (joints[i].y - pi[i].y) * (joints[i].y - pi[i].y) + (joints[i].z - pi[i].z) * (joints[i].z - pi[i].z);
 			if (dist > 2500) {
-				postures.push_back(joints);
-				return true;
+				isSimilar = false;
+				break;
 			}
-		}	
+		}
+
+		if (isSimilar)
+			return false;
 	}
 
-	return false;
+	postures.push_back(joints);
+	return true;
 }
 
 void ofApp::LoadNextImage()
