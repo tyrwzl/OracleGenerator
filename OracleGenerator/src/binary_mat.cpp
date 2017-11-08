@@ -34,23 +34,23 @@ int BinaryMat::GetDepthHeight()
 // Load cv::Mat as binary
 bool BinaryMat::LoadMatBinary(const std::string& filename)
 {
-	std::ifstream ifs(filename, std::ios::binary);
-	if (!ifs.is_open()) {
-		return false;
-	}
+	//std::ifstream ifs(filename, std::ios::binary);
+	//if (!ifs.is_open()) {
+	//	return false;
+	//}
 
-	int rows, cols, type;
-	ifs.read((char*)(&rows), sizeof(int));
-	if (rows == 0) {
-		return true;
-	}
-	ifs.read((char*)(&cols), sizeof(int));
-	ifs.read((char*)(&type), sizeof(int));
+	//int rows, cols, type;
+	//ifs.read((char*)(&rows), sizeof(int));
+	//if (rows == 0) {
+	//	return true;
+	//}
+	//ifs.read((char*)(&cols), sizeof(int));
+	//ifs.read((char*)(&type), sizeof(int));
 
 	depthData.release();
-	depthData.create(rows, cols, type);
-	ifs.read((char*)(depthData.data), depthData.elemSize() * depthData.total());
-
+	depthData.create(424, 512, CV_16UC1);
+	//ifs.read((char*)(depthData.data), depthData.elemSize() * depthData.total());
+	depthData = cv::imread(filename, -1);
 	/*
 	cv::namedWindow("depth", CV_WINDOW_AUTOSIZE);
 	cv::resizeWindow("depth", depthWidth, depthHeight);

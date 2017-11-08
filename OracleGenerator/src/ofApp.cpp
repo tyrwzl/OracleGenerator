@@ -104,7 +104,7 @@ void ofApp::update() {
 	cord.x = depth * tan( (mouse_position.x - 256 - 212) * M_PI * 70 / (360 * 256));
 	cord.y = depth * tan( (- mouse_position.y + 212)     * M_PI * 60 / (360 * 212));
 	ta3->setTextString("X:" + ofToString(cord.x) + " Y:" + ofToString(cord.y) + " Z:" + ofToString(depth));
-	ta4->setTextString("FILENAME:"+number_file);
+	//ta4->setTextString("FILENAME:"+number_file);
 	//ofLog(OF_LOG_FATAL_ERROR, "x:"+ofToString(auto_position.x)+", y:" + ofToString(auto_position.y) + ", z:" + ofToString(auto_position.z) + ", w:" + ofToString(auto_position.w));
 	//lineFbo.begin();
 	//drawFbo();
@@ -119,7 +119,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	// draw depth image
-	if (flag_show_image) {
+ 	if (flag_show_image) {
 		ofSetColor(255);
 		depthImage.draw(212, 0);
 	}
@@ -241,14 +241,14 @@ void ofApp::draw() {
 		mat_color.release();
 		buffer.release();
 		buffer = cv::Mat::zeros(424, 512, CV_8SC1);
-		mat_color = cv::imread(file_name + "color.bmp");
+		//mat_color = cv::imread(file_name + "color.bmp");
 		//cv::medianBlur(mat_color, mat_color_rgb, 5);
-		ofLog(OF_LOG_FATAL_ERROR, "ERROR4");
-		cv::medianBlur(mat_color, mat_color, 5);
-		cv::cvtColor(mat_color, mat_color, CV_BGR2HSV);
+		//ofLog(OF_LOG_FATAL_ERROR, "ERROR4");
+		//cv::medianBlur(mat_color, mat_color, 5);
+		//cv::cvtColor(mat_color, mat_color, CV_BGR2HSV);
 		//cv:imshow("color", mat_color);
 
-		flag_joint = true;
+		//flag_joint = true;
 
 	}
 
@@ -422,30 +422,39 @@ void ofApp::keyPressed(int key) {
 				//ofLog(OF_LOG_NOTICE, "can't load binary");
 			}
 			//bm.ImageGenerator(openFileResult.getPath() + ".jpg");
-			string s = openFileResult.getPath() + "color.bmp";
+			string s = openFileResult.getPath();// +"color.bmp";
 			if (!depthImage.loadImage(s)) {
 				//ofLog(OF_LOG_NOTICE, "can't load image");
 			}
 			else {
 				flag_depth_read = true;
-				cv::Mat color = cv::imread(openFileResult.getPath() + "color.bmp");
-				cv::cvtColor(color, color, CV_BGR2RGB);
-				depthImage.setFromPixels(color.ptr(), color.cols, color.rows, OF_IMAGE_COLOR, false);
+				cv::Mat color = cv::imread(openFileResult.getPath(), -1);// +"color.bmp")
+																		 //cv::Mat depth_high;
+
+				cv::Mat depth_high(424, 512, CV_8UC1);
+
+				// Depthデータを0-255のグレーデータにする
+				for (int i = 0; i < depth_high.total(); ++i) {
+					depth_high.data[i] = ((unsigned short *)color.data)[i] % 255;
+				}
+				//color.convertTo(depth_high, CV_8U, -255.0f / 8000.0f, 255.0f);
+				//cv::cvtColor(color, color, CV_BGR2RGB);
+				depthImage.setFromPixels(depth_high.ptr(), depth_high.cols, depth_high.rows, OF_IMAGE_GRAYSCALE, false);
 			}
 			//depthImage.mirror(false, true);
 			flag_show_image = true;
-			mat_color = cv::imread(openFileResult.getPath() + "color.bmp");
+			//mat_color = cv::imread(openFileResult.getPath() + "color.bmp");
 			buffer = cv::Mat::zeros(424, 512, CV_8SC1);
 			//cv::imshow("color", mat_color);
 			//cv::medianBlur(mat_color, mat_color_rgb, 5);
-			cv::medianBlur(mat_color, mat_color, 5);
-			cv::cvtColor(mat_color, mat_color, CV_BGR2HSV);
+			//cv::medianBlur(mat_color, mat_color, 5);
+			//cv::cvtColor(mat_color, mat_color, CV_BGR2HSV);
 			//cv::imshow("color", mat_color);
 		}
 		else {
 			ofLogVerbose("User hit cancel");
 		}
-		flag_joint = true;
+		//flag_joint = true;
 
 	}
 	if (key == 'b') {
@@ -498,9 +507,9 @@ void ofApp::mouseMoved(int x, int y) {
 		depth = getDepth(x, y, bm.GetDepthData());//*((unsigned short *)(bm.GetDepthData().data + bm.GetDepthData().step[0] * (int)mouse_position.y + bm.GetDepthData().step[1] * (int)(mouse_position.x-212)));
 		int a = getColorIndex(x, y, mat_color);
 		//int a = mat_color.step[0] * y + ((x - 212) * 3);
-		h = mat_color.data[a];
-		s = mat_color.data[a + 1];
-		v = mat_color.data[a + 2];
+		//h = mat_color.data[a];
+		//s = mat_color.data[a + 1];
+		//v = mat_color.data[a + 2];
 	}
 	//ofLog(OF_LOG_FATAL_ERROR, ofToString(depth));
 
@@ -519,10 +528,10 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	mouse_position.y = y;
 	if (flag_depth_read) {
 		depth = getDepth(x, y, bm.GetDepthData());//(short)*((unsigned short *)(bm.GetDepthData().data + bm.GetDepthData().step[0] * (int)mouse_position.y + bm.GetDepthData().step[1] * (int)(mouse_position.x-212)));
-		int a = getColorIndex(x, y, mat_color);//mat_color.step[0] * y + ((x - 212) * 3);
-		h = mat_color.data[a];
-		s = mat_color.data[a + 1];
-		v = mat_color.data[a + 2];
+		//int a = getColorIndex(x, y, mat_color);//mat_color.step[0] * y + ((x - 212) * 3);
+		//h = mat_color.data[a];
+		//s = mat_color.data[a + 1];
+		//v = mat_color.data[a + 2];
 	}
 	//ofLog(OF_LOG_FATAL_ERROR, ofToString(depth));
 	if (flag_auto == 2) {
@@ -1324,5 +1333,5 @@ void ofApp::LoadNextImage()
 		cv::cvtColor(mat_color, mat_color, CV_BGR2HSV);
 		//cv:imshow("color", mat_color);
 
-		flag_joint = true;
+		//flag_joint = true;
 }
